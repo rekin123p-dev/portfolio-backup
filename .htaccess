@@ -1,0 +1,43 @@
+RewriteEngine On
+
+# --- 1) Force HTTPS (official code from InfinityFree's docs) ---
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:CF-Visitor} !{"scheme":"https"}
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# --- 2) If someone hits a .html URL directly, redirect (301) to the clean one ---
+#     (e.g. /credits.html -> /credits, /changelog.html?project=site -> /changelog?project=site)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# --- 3) Underneath, still serve the actual .html file (invisible to the visitor) ---
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.*)$ $1.html [L]
+
+# --- 4) Hotlink protection for images/icons embedded on other sites ---
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?rekin123p\.yo\.onl [NC]
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?rek123p\.github\.io [NC]
+RewriteRule \.(jpg|jpeg|png|gif|webp|svg|ico)$ - [NC,F,L]
+
+# --- 5) Disable directory listing (no one can browse a folder's file list) ---
+Options -Indexes
+
+# --- 6) Block access to hidden files (e.g. in case .git ever ends up on the server) ---
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# --- 7) Cache static files — fewer repeat requests, less resource usage ---
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType application/json "access plus 1 hour"
+</IfModule>
