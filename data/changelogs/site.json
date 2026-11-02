@@ -3,6 +3,23 @@
     "projectDisplay": { "en": "Portfolio Site", "pl": "Strona portfolio" },
     "versions": [
         {
+            "version": "2.1.0",
+            "date": "2026-11-02",
+            "categories": [
+                {
+                    "name": { "en": "Pricing", "pl": "Cennik" },
+                    "changes": {
+                        "en": [
+                            "The Pricing section now links to a live, working example site for each Full Website Build tier (Starter, Growth, Professional, Signature), each with a short note on what's included at that price range."
+                        ],
+                        "pl": [
+                            "Sekcja Cennik linkuje teraz do żywego, działającego przykładu strony dla każdego progu Full Website Build (Starter, Growth, Professional, Signature), każdy z krótką notką o tym, co wchodzi w zakres przy danej cenie."
+                        ]
+                    }
+                }
+            ]
+        },
+        {
             "version": "2.0.0",
             "date": "2026-10-28",
             "categories": [

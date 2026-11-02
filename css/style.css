@@ -1075,6 +1075,76 @@ section h2 {
     background: var(--gold-dim);
 }
 
+.pricing-examples {
+    margin-top: 28px;
+}
+
+.pricing-examples__heading {
+    font-family: var(--font-head);
+    font-size: 1rem;
+    color: var(--gold-bright);
+    margin-bottom: 14px;
+}
+
+.pricing-examples__list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+.pricing-examples__item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pricing-examples__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pricing-examples__name {
+    font-weight: 600;
+    color: var(--text-0);
+    font-size: 0.95rem;
+}
+
+.pricing-examples__top .pricing-card__range {
+    font-size: 0.8rem;
+    color: var(--text-2);
+    margin: 0;
+}
+
+.pricing-examples__desc {
+    color: var(--text-2);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.pricing-examples__link {
+    align-self: flex-start;
+    color: var(--gold-bright);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.pricing-examples__link:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--gold-dim);
+}
+
 .pricing-disclaimer {
     color: var(--text-2);
     font-size: 0.85rem;
