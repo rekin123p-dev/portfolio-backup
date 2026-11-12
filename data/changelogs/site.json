@@ -3,6 +3,34 @@
     "projectDisplay": { "en": "Portfolio Site", "pl": "Strona portfolio" },
     "versions": [
         {
+            "version": "2.2.0",
+            "date": "2026-11-12",
+            "categories": [
+                {
+                    "name": { "en": "Contact", "pl": "Kontakt" },
+                    "changes": {
+                        "en": [
+                            "The Contact section now shows a day-by-day phone availability schedule (Warsaw time), with today highlighted and a live indicator for whether it's a good time to call right now."
+                        ],
+                        "pl": [
+                            "Sekcja Kontakt pokazuje teraz dostępność telefoniczną dzień po dniu (czas warszawski), z wyróżnionym dzisiejszym dniem i wskaźnikiem na żywo pokazującym, czy to akurat dobra pora na telefon."
+                        ]
+                    }
+                },
+                {
+                    "name": { "en": "Pricing", "pl": "Cennik" },
+                    "changes": {
+                        "en": [
+                            "Updated the Full Website Build description to no longer mention a lack of templates, now that live examples exist for every tier."
+                        ],
+                        "pl": [
+                            "Zaktualizowany opis Full Website Build — usunięta nieaktualna już wzmianka o braku szablonów, skoro każdy próg ma teraz żywy przykład."
+                        ]
+                    }
+                }
+            ]
+        },
+        {
             "version": "2.1.0",
             "date": "2026-11-02",
             "categories": [

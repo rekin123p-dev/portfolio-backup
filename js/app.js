@@ -304,7 +304,90 @@ function updateClocks() {
     yourTimeEl.textContent = formatTime(visitorTimezone, now);
 }
 
+// Contact — phone availability, per day of the week. Independent of the
+// manual available/busy badge in Hero (#heroStatus) — this always reflects
+// the real calendar/clock in Warsaw, regardless of what data-status there
+// says. Each day's window is configurable by hand via data-hours-<day> on
+// #contactHours (format "start-end", e.g. "9-21"), no JS changes needed to
+// adjust it later.
+const contactHoursEl = document.getElementById("contactHours");
+const contactHoursListEl = document.getElementById("contactHoursList");
+
+const CONTACT_HOURS_DAYS = [
+    { key: "mon", dataKey: "hoursMon", labelKey: "contact.hours.day.mon", labelFallback: "Mon" },
+    { key: "tue", dataKey: "hoursTue", labelKey: "contact.hours.day.tue", labelFallback: "Tue" },
+    { key: "wed", dataKey: "hoursWed", labelKey: "contact.hours.day.wed", labelFallback: "Wed" },
+    { key: "thu", dataKey: "hoursThu", labelKey: "contact.hours.day.thu", labelFallback: "Thu" },
+    { key: "fri", dataKey: "hoursFri", labelKey: "contact.hours.day.fri", labelFallback: "Fri" },
+    { key: "sat", dataKey: "hoursSat", labelKey: "contact.hours.day.sat", labelFallback: "Sat" },
+    { key: "sun", dataKey: "hoursSun", labelKey: "contact.hours.day.sun", labelFallback: "Sun" },
+];
+
+function parseHoursRange(raw) {
+    const parts = (raw || "").split("-").map((n) => parseInt(n, 10));
+    return {
+        start: Number.isFinite(parts[0]) ? parts[0] : 0,
+        end: Number.isFinite(parts[1]) ? parts[1] : 24,
+    };
+}
+
+function formatHour(h) {
+    return `${String(h).padStart(2, "0")}:00`;
+}
+
+function updateContactHours() {
+    if (!contactHoursEl || !contactHoursListEl) return;
+
+    const now = new Date();
+
+    const todayKey = new Intl.DateTimeFormat("en-US", {
+        weekday: "short",
+        timeZone: MY_TIMEZONE,
+    }).format(now).toLowerCase().slice(0, 3);
+
+    const hourInWarsaw = parseInt(
+        new Intl.DateTimeFormat("en-GB", {
+            hour: "2-digit",
+            hour12: false,
+            timeZone: MY_TIMEZONE,
+        }).format(now),
+        10
+    );
+
+    contactHoursListEl.innerHTML = "";
+
+    CONTACT_HOURS_DAYS.forEach((day) => {
+        const { start, end } = parseHoursRange(contactHoursEl.dataset[day.dataKey]);
+        const isToday = day.key === todayKey;
+
+        const li = document.createElement("li");
+        li.className = "contact-hours__row" + (isToday ? " contact-hours__row--today" : "");
+
+        const dayLabel = document.createElement("span");
+        dayLabel.className = "contact-hours__day";
+        dayLabel.textContent = translate(day.labelKey, day.labelFallback);
+        li.appendChild(dayLabel);
+
+        const range = document.createElement("span");
+        range.className = "contact-hours__range";
+        range.textContent = `${formatHour(start)}–${formatHour(end)}`;
+        li.appendChild(range);
+
+        if (isToday) {
+            const inWindow = hourInWarsaw >= start && hourInWarsaw < end;
+            const dot = document.createElement("span");
+            dot.className = "contact-hours__dot " + (inWindow ? "contact-hours__dot--in" : "contact-hours__dot--out");
+            dot.setAttribute("aria-hidden", "true");
+            li.appendChild(dot);
+        }
+
+        contactHoursListEl.appendChild(li);
+    });
+}
+
 updateClocks();
+updateContactHours();
+document.addEventListener("languagechange", updateContactHours);
 
 // Phase-lock the refresh to the real wall-clock minute boundary: a single
 // setTimeout waits out whatever's left of the current minute, then a
@@ -314,7 +397,11 @@ updateClocks();
 const msUntilNextMinute = 60000 - (Date.now() % 60000);
 setTimeout(() => {
     updateClocks();
-    setInterval(updateClocks, 60 * 1000);
+    updateContactHours();
+    setInterval(() => {
+        updateClocks();
+        updateContactHours();
+    }, 60 * 1000);
 }, msUntilNextMinute);
 
 // ---------------------------------------------------------------------------
